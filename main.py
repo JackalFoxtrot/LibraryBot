@@ -32,6 +32,7 @@ colors = {"fantasy" : 0x1abc9c, "sci-fi" : 0x2ecc71,
 def __init__(self, bot):
     self.bot = bot
 
+
 @bot.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(bot))
@@ -213,13 +214,18 @@ async def embedBook(message):
 
     embedObj.set_author(name = message.author.display_name, icon_url=message.author.avatar_url)
     
+    if os.getenv('LIBRARYBOT_RESPONSE_CHANNEL'):
+        channelReply = os.getenv('LIBRARYBOT_RESPONSE_CHANNEL')
+        #print('ChannelReply has been set to: '+ channelReply)
+
     if channelReply != -1:
-        channel = bot.get_channel(channelReply)
+        channel = bot.get_channel(int(channelReply))
         bookembed = await channel.send(embed=embedObj)
-        print("Printing book to channel: " + str(channelReply))
+        #print("Printing book to channel: " + str(channelReply))
     else:
         bookembed = await message.channel.send(embed=embedObj)
-        print("Printing book to message's channel")
+        #print("Printing book to message's channel: " + str(channelReply))
+        #print("Reponse Channel: "+ os.getenv('LIBRARYBOT_RESPONSE_CHANNEL'))
 
     await bookembed.add_reaction('❤️')
     await bookembed.add_reaction('👍')
